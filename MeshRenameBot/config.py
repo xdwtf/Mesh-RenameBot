@@ -18,6 +18,7 @@ except ImportError:
         IS_PRIVATE = [bool, False]
         AUTH_USERS = [list,[123456789]]
         OWNER_ID = [int, 0]
+        ADMINS = [int, 0]
 
         # Username for public and invite link for private
         FORCEJOIN = [str,""]
@@ -38,3 +39,4 @@ except ImportError:
         QUEUE = "/queue"
         MODE = "/mode"
         HELP = "/help"
+        USERS = "/users"

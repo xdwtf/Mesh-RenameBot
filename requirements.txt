@@ -7,3 +7,5 @@ pillow
 hachoir
 pymongo
 dnspython
+sqlalchemy~=1.3.23
+feedparser

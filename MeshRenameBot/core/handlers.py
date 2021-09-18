@@ -8,6 +8,8 @@ import re
 import logging
 import signal
 import asyncio
+from ..database.support import users_info
+from ..database.sql import add_user, query_msg
 from ..translations.trans import Trans
 from ..maneuvers.ExecutorManager import ExecutorManager
 from ..maneuvers.Rename import RenameManeuver
@@ -17,6 +19,16 @@ from .thumb_manage import handle_set_thumb, handle_get_thumb, handle_clr_thumb
 from .mode_select import upload_mode, mode_callback
 from ..config import Commands
 from ..translations.trans import Trans
+
+#=====================================================================================##
+
+USERS_LIST = """<b>Total:</b>\n\nSubscribers - {}\nBlocked- {}"""
+
+WAIT_MSG = """"<b>Processing ...</b>"""
+
+
+#=====================================================================================##
+
 
 renamelog = logging.getLogger(__name__)
 
@@ -36,6 +48,7 @@ def add_handlers(client: Client) -> None:
     client.add_handler(MessageHandler(handle_set_thumb, filters.regex(Commands.SET_THUMB, re.IGNORECASE)))
     client.add_handler(MessageHandler(handle_get_thumb, filters.regex(Commands.GET_THUMB, re.IGNORECASE)))
     client.add_handler(MessageHandler(handle_clr_thumb, filters.regex(Commands.CLR_THUMB, re.IGNORECASE)))
+    client.add_handler(MessageHandler(subscribers_count, filters.regex(Commands.USERS, re.IGNORECASE)))
     client.add_handler(MessageHandler(handle_queue, filters.regex(Commands.QUEUE, re.IGNORECASE)))
     client.add_handler(MessageHandler(upload_mode, filters.regex(Commands.MODE, re.IGNORECASE)))
     client.add_handler(MessageHandler(help_str, filters.regex(Commands.HELP, re.IGNORECASE)))
@@ -49,8 +62,23 @@ def add_handlers(client: Client) -> None:
 
 async def start_handler(client: Client, msg: Message) -> None:
     await msg.reply(Trans.START_MSG, quote=True)
+     try:
+    ADMINS=[]
+    for x in (get_var("ADMINS", "").split()):
+        ADMINS.append(int(x))
+except ValueError:
+        raise Exception("Your Admins list does not contain valid integers.")
 
-
+async def subscribers_count(Client, msg: Message) -> None:
+    id = msg.from_user.id
+    if id not in get_var("ADMINS"):
+        return
+    msg = await msg.reply_text(WAIT_MSG)
+    messages = await users_info(bot)
+    active = messages[0]
+    blocked = messages[1]
+    await msg.delete()
+    await msg.edit(USERS_LIST.format(active, blocked))
 async def rename_handler(client: Client, msg: Message) -> None:
     rep_msg = msg.reply_to_message
         
