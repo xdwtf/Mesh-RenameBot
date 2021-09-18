@@ -8,8 +8,8 @@ class UserDB(MongoDB):
     def __init__(self,dburl=None):
         if dburl is None:
             dburl = os.environ.get("DATABASE_URL",None)
-            if dburl is None:
-                dburl = get_var("DATABASE_URL")
+        if dburl is None:
+            dburl = get_var("DATABASE_URL")
 
         super().__init__(dburl)
 
@@ -70,29 +70,28 @@ class UserDB(MongoDB):
         users = db.mesh_rename
 
         res = users.find({"user_id":user_id})
-        
-        
-        if res.count() > 0:
-            row = res[0]
-            
-            if row["thumbnail"] is None:
-                return False
-            else:
-                path = os.path.join(os.getcwd(), 'userdata')
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                
-                path = os.path.join(path, user_id)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                
-                path = os.path.join(path, "thumbnail.jpg")
-                with open(path, "wb") as rfile:
-                    rfile.write(row["thumbnail"])
-                
-                return path
-        else:
+
+
+        if res.count() <= 0:
             return False
+
+        row = res[0]
+
+        if row["thumbnail"] is None:
+            return False
+        path = os.path.join(os.getcwd(), 'userdata')
+        if not os.path.exists(path):
+            os.mkdir(path)
+
+        path = os.path.join(path, user_id)
+        if not os.path.exists(path):
+            os.mkdir(path)
+
+        path = os.path.join(path, "thumbnail.jpg")
+        with open(path, "wb") as rfile:
+            rfile.write(row["thumbnail"])
+
+        return path
 
 
     def set_thumbnail(self, thumbnail: bytes, user_id: int) -> bool:
@@ -138,16 +137,14 @@ class UserDB(MongoDB):
         users = db.mesh_rename
 
         res = users.find({"user_id":user_id})
-        
-        
-        if res.count() > 0:
-            row = res[0]
-            
-            
-            if row["file_choice"] is None:
-                return self.MODE_SAME_AS_SENT
-            else:
-                return row["file_choice"]
-            
-        else:
+
+
+        if res.count() <= 0:
             return False
+        row = res[0]
+
+
+        if row["file_choice"] is None:
+            return self.MODE_SAME_AS_SENT
+        else:
+            return row["file_choice"]

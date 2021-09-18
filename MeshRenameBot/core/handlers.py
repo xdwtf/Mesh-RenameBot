@@ -114,10 +114,7 @@ async def cancel_this(client: Client, msg: Message) -> None:
 async def handle_queue(client: Client, msg: Message) -> None:
     EM = ExecutorManager()
 
-    j = 0
-    for i in EM.all_maneuvers_log:
-        if i.is_pending:
-            j += 1
+    j = sum(bool(i.is_pending) for i in EM.all_maneuvers_log)
     q_len = j
 
     j = 0
@@ -125,7 +122,7 @@ async def handle_queue(client: Client, msg: Message) -> None:
         if i.is_executing:
             j += 1
     currently_exec = j
-    
+
     from_id = msg.from_user.id
     max_size = get_var("MAX_QUEUE_SIZE")
 
@@ -138,7 +135,7 @@ async def handle_queue(client: Client, msg: Message) -> None:
                 fmsg += f"Your Task Is Executing\nTask Unique Number {i._unique_id}\n\n"
             if i.is_pending:
                 fmsg += f"Your Task Number in Queue: {j}\nTask Unique Number {i._unique_id}\n\n"
-        
+
         if i.is_pending:
             j += 1
 

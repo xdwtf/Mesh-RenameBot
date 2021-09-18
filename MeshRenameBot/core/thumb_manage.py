@@ -100,26 +100,13 @@ async def get_thumbnail(file_path, user_id = None, force_docs = False):
 
     if user_id is not None:
         user_thumb = UserDB().get_thumbnail(user_id)
-        if force_docs:
-            if user_thumb is not False:
-                return user_thumb
-            else:
-                return None
-        else:
-            if user_thumb is not False:
-                return user_thumb
-            else:
-                path = await gen_ss(file_path,random.randint(2,duration.seconds))
-                path = await resize_img(path,320)
-                return path
-
-    else:
-        if force_docs:
-            return None
-        
-        path = await gen_ss(file_path,random.randint(2,duration.seconds))
-        path = await resize_img(path,320)
-        return path
+        if user_thumb is not False:
+            return user_thumb
+    if force_docs:
+        return None
+    path = await gen_ss(file_path,random.randint(2,duration.seconds))
+    path = await resize_img(path,320)
+    return path
 
 async def handle_clr_thumb(client, msg):
     UserDB().set_thumbnail(None, msg.from_user.id)
