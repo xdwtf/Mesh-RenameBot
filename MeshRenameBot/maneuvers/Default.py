@@ -47,10 +47,7 @@ class DefaultManeuver(ABC):
 
     @property
     def is_executing(self) -> bool:
-        if not self._done and not self._execute_pending:
-            return True
-        else:
-            return False
+        return not self._done and not self._execute_pending
 
     @property
     def is_pending(self) -> bool:

@@ -23,7 +23,7 @@ async def progress_for_pyrogram(
 ):
     now = time.time()
     diff = now - start
-    
+
     # too early to update the progress
     if diff < 1:
         return
@@ -32,7 +32,7 @@ async def progress_for_pyrogram(
         raise StopTransmission()
 
     if round(diff % time_out) == 0 or current == total:
-    
+
         # if round(current / total * 100, 0) % 5 == 0:
         percentage = current * 100 / total
         elapsed_time = round(diff)
@@ -44,9 +44,17 @@ async def progress_for_pyrogram(
         estimated_total_time = human_readable_timedelta(estimated_total_time)
 
         progress = "[{0}{1}] \nP: {2}%\n".format(
-            ''.join([get_var("COMPLETED_STR") for _ in range(math.floor(percentage / 10))]),
-            ''.join([get_var("REMAINING_STR") for _ in range(10 - math.floor(percentage / 10))]),
-            round(percentage, 2))
+            ''.join(
+                get_var("COMPLETED_STR")
+                for _ in range(math.floor(percentage / 10))
+            ),
+            ''.join(
+                get_var("REMAINING_STR")
+                for _ in range(10 - math.floor(percentage / 10))
+            ),
+            round(percentage, 2),
+        )
+
 
         tmp = progress + "{0} of {1}\nSpeed: {2}/s\nETA: {3}\n".format(
             human_readable_bytes(current),

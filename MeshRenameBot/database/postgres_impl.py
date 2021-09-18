@@ -14,8 +14,8 @@ class UserDB(DataBaseHandle):
 
         if dburl is None:
             dburl = os.environ.get("DATABASE_URL", None)
-            if dburl is None:
-                dburl = get_var("DATABASE_URL")
+        if dburl is None:
+            dburl = get_var("DATABASE_URL")
 
         super().__init__(dburl)
         cur = self.scur()
@@ -55,31 +55,28 @@ class UserDB(DataBaseHandle):
 
     def get_var(self, var: str, user_id: int) -> Union[None, str]:
         user_id = str(user_id)
-        sql = "SELECT * FROM ttk_users WHERE user_id=%s"
-
         # search the cache
         user = self.shared_users.get(user_id)
 
         if user is not None:
             return user.get(var)
-        else:
-            cur = self.scur(dictcur=True)
+        cur = self.scur(dictcur=True)
 
-            cur.execute(sql, (user_id,))
-            if cur.rowcount > 0:
-                user = cur.fetchone()
-                jdata = user.get("json_data")
-                
-                if jdata is None:
-                    return None
-                
-                jdata = json.loads(jdata)
-                self.shared_users[user_id] = jdata
-                return jdata.get(var)
-            else:
-                return None
+        sql = "SELECT * FROM ttk_users WHERE user_id=%s"
 
-            self.ccur(cur)
+        cur.execute(sql, (user_id,))
+        if cur.rowcount <= 0:
+            return None
+
+        user = cur.fetchone()
+        jdata = user.get("json_data")
+
+        if jdata is None:
+            return None
+
+        jdata = json.loads(jdata)
+        self.shared_users[user_id] = jdata
+        return jdata.get(var)
 
     def set_var(self, var: str, value: Union[int, str], user_id: int) -> None:
         user_id = str(user_id)
@@ -98,11 +95,7 @@ class UserDB(DataBaseHandle):
                 user = cur.fetchone()
                 jdata = user.get("json_data")
 
-                if jdata is None:
-                    jdata = {}
-                else:
-                    jdata = json.loads(jdata)
-                
+                jdata = {} if jdata is None else json.loads(jdata)
                 jdata[var] = value
                 self.shared_users[user_id] = jdata
             else:
@@ -125,28 +118,27 @@ class UserDB(DataBaseHandle):
         cur = self.scur(dictcur=True)
 
         cur.execute(sql, (user_id,))
-        
-        if cur.rowcount > 0:
-            row = cur.fetchone()
-            self.ccur(cur)
-            if row["thumbnail"] is None:
-                return False
-            else:
-                path = os.path.join(os.getcwd(), 'userdata')
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                
-                path = os.path.join(path, user_id)
-                if not os.path.exists(path):
-                    os.mkdir(path)
-                
-                path = os.path.join(path, "thumbnail.jpg")
-                with open(path, "wb") as rfile:
-                    rfile.write(row["thumbnail"])
-                
-                return path
-        else:
+
+        if cur.rowcount <= 0:
             return False
+
+        row = cur.fetchone()
+        self.ccur(cur)
+        if row["thumbnail"] is None:
+            return False
+        path = os.path.join(os.getcwd(), 'userdata')
+        if not os.path.exists(path):
+            os.mkdir(path)
+
+        path = os.path.join(path, user_id)
+        if not os.path.exists(path):
+            os.mkdir(path)
+
+        path = os.path.join(path, "thumbnail.jpg")
+        with open(path, "wb") as rfile:
+            rfile.write(row["thumbnail"])
+
+        return path
 
     def set_thumbnail(self, thumbnail: bytes, user_id: int) -> bool:
         user_id = str(user_id)

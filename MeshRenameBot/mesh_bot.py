@@ -24,14 +24,8 @@ class MeshRenameBot(Client):
         else:
             media = message
 
-        if isinstance(media, str):
-            file_id_str = media
-        else:
-            file_id_str = media.file_id
-
-        file_id_obj = FileId.decode(file_id_str)
-        
-        return file_id_obj
+        file_id_str = media if isinstance(media, str) else media.file_id
+        return FileId.decode(file_id_str)
 
     async def send_track(self, text_mess):
         track_channel = get_var("TRACE_CHANNEL")
