@@ -102,7 +102,7 @@ async def stats_str(client: Client, msg: Message) -> None:
             f'<b>├  💿 DISK : {disk}%</b>\n' \
             f'<b>│</b>\n' \
             f'<b>╰──「@Touka19」</b>'
-    await update.reply_text(stats)
+    await msg.reply_text(stats)
 
 def term_handler(signum: int, frame: int) -> None:
     ExecutorManager().stop()
