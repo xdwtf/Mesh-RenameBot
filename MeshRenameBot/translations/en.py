@@ -87,4 +87,5 @@ clrthumb - Remove the thumbnail which is set.
     - Force to Document. [Everything is uploaded as a file.]
     - Upload general media. [In streamable video/audio. etc.]
 /queue - Gives the state of your rename and the load on bot.
+/stats - Check Status of Bot.
     """
