@@ -79,7 +79,7 @@ async def help_str(client: Client, msg: Message) -> None:
     await msg.reply_text(Trans.HELP_STR,quote=True)
 
 async def stats_str(client: Client, msg: Message) -> None:
-    currentTime = readable_time((time.time() - botStartTime))
+    currentTime = get_readable_time(time.time() - botStartTime)
     total, used, free = shutil.disk_usage('.')
     total = get_readable_file_size(total)
     used = get_readable_file_size(used)
