@@ -8,9 +8,12 @@ import re
 import logging
 import signal
 import asyncio
+import shutil, psutil
 from ..translations.trans import Trans
+from MeshRenameBot import botStartTime
 from ..maneuvers.ExecutorManager import ExecutorManager
 from ..maneuvers.Rename import RenameManeuver
+from ..utils.statutils import *
 from ..utils.c_filter import filter_controller, filter_interact
 from ..utils.user_input import interactive_input
 from .thumb_manage import handle_set_thumb, handle_get_thumb, handle_clr_thumb
@@ -36,6 +39,7 @@ def add_handlers(client: Client) -> None:
     client.add_handler(MessageHandler(handle_set_thumb, filters.regex(Commands.SET_THUMB, re.IGNORECASE)))
     client.add_handler(MessageHandler(handle_get_thumb, filters.regex(Commands.GET_THUMB, re.IGNORECASE)))
     client.add_handler(MessageHandler(handle_clr_thumb, filters.regex(Commands.CLR_THUMB, re.IGNORECASE)))
+    client.add_handler(MessageHandler(stats_str, filters.regex(Commands.STATS, re.IGNORECASE)))
     client.add_handler(MessageHandler(handle_queue, filters.regex(Commands.QUEUE, re.IGNORECASE)))
     client.add_handler(MessageHandler(upload_mode, filters.regex(Commands.MODE, re.IGNORECASE)))
     client.add_handler(MessageHandler(help_str, filters.regex(Commands.HELP, re.IGNORECASE)))
@@ -73,6 +77,32 @@ async def rename_handler(client: Client, msg: Message) -> None:
     
 async def help_str(client: Client, msg: Message) -> None:
     await msg.reply_text(Trans.HELP_STR,quote=True)
+
+async def stats_str(client: Client, msg: Message) -> None:
+    currentTime = get_readable_time(time.time() - botStartTime)
+    total, used, free = shutil.disk_usage('.')
+    total = get_readable_file_size(total)
+    used = get_readable_file_size(used)
+    free = get_readable_file_size(free)
+    sent = get_readable_file_size(psutil.net_io_counters().bytes_sent)
+    recv = get_readable_file_size(psutil.net_io_counters().bytes_recv)
+    cpuUsage = psutil.cpu_percent(interval=0.5)
+    memory = psutil.virtual_memory().percent
+    disk = psutil.disk_usage('/').percent
+    stats = f'<b>「 💠 BOT STATISTICS 」</b>\n' \
+            f'<b></b>\n' \
+            f'<b>⏳ Bot Uptime : {currentTime}</b>\n' \
+            f'<b>💾 Total Disk Space : {total}</b>\n' \
+            f'<b>📀 Total Used Space : {used}</b>\n' \
+            f'<b>💿 Total Free Space : {free}</b>\n' \
+            f'<b>🔺 Total Upload : {sent}</b>\n' \
+            f'<b>🔻 Total Download : {recv}</b>\n' \
+            f'<b>🖥 CPU : {cpuUsage}%</b>\n' \
+            f'<b>⚙️ RAM : {memory}%</b>\n' \
+            f'<b>💿 DISK : {disk}%</b>\n' \
+            f'<b></b>\n' \
+            f'<b>「@Touka19」</b>'
+    await msg.reply_text(stats,quote=True)
 
 def term_handler(signum: int, frame: int) -> None:
     ExecutorManager().stop()

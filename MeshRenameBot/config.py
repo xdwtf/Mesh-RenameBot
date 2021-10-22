@@ -38,3 +38,4 @@ except ImportError:
         QUEUE = "/queue"
         MODE = "/mode"
         HELP = "/help"
+        STATS = "/stats"
