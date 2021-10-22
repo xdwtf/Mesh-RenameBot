@@ -10,6 +10,7 @@ import signal
 import asyncio
 import shutil, psutil
 from ..translations.trans import Trans
+from MeshRenameBot import botStartTime
 from ..maneuvers.ExecutorManager import ExecutorManager
 from ..maneuvers.Rename import RenameManeuver
 from ..utils import statutils
