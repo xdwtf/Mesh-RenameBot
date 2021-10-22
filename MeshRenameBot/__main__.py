@@ -10,6 +10,8 @@ logging.basicConfig(
 )
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
 
+botStartTime = time.time()
+
 # TODO Add a alert for an extra space recorded
 
 if __name__ == "__main__":
