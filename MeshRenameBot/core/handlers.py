@@ -13,7 +13,7 @@ from ..translations.trans import Trans
 from MeshRenameBot import botStartTime
 from ..maneuvers.ExecutorManager import ExecutorManager
 from ..maneuvers.Rename import RenameManeuver
-from ..utils import statutils
+from ..utils.statutils import *
 from ..utils.c_filter import filter_controller, filter_interact
 from ..utils.user_input import interactive_input
 from .thumb_manage import handle_set_thumb, handle_get_thumb, handle_clr_thumb
