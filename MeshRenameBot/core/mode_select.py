@@ -16,16 +16,16 @@ async def upload_mode(client: Client, msg: Message ) -> None:
     msg_str =""
 
     if modee == UserDB.MODE_SAME_AS_SENT:
-        msg_str += "➡️ "
+        msg_str += "✅ "
     
     msg_str += "1. MODE to the same format as it was sent.\n"    
     if modee == UserDB.MODE_AS_DOCUMENT:
-        msg_str += "➡️ "
+        msg_str += "✅ "
     
     msg_str += "2. MODE Forced Document.\n"
     
     if modee == UserDB.MODE_AS_GMEDIA:
-        msg_str += "➡️ "
+        msg_str += "✅ "
     
     msg_str += "3. Mode General Media."
 
@@ -54,16 +54,16 @@ async def mode_callback(client, msg: MessageEntity):
     msg_str =""
 
     if smode == UserDB.MODE_SAME_AS_SENT:
-        msg_str += "➡️ "
+        msg_str += "✅ "
     
     msg_str += "1. MODE to the same format as it was sent.\n"    
     if smode == UserDB.MODE_AS_DOCUMENT:
-        msg_str += "➡️ "
+        msg_str += "✅ "
     
     msg_str += "2. MODE Forced Document.\n"
     
     if smode == UserDB.MODE_AS_GMEDIA:
-        msg_str += "➡️ "
+        msg_str += "✅ "
     
     msg_str += "3. Mode General Media."
 
