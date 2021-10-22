@@ -39,6 +39,15 @@ def get_readable_time(seconds: int) -> str:
     result += f'{seconds}s'
     return result
 
+def get_path_size(path):
+    if os.path.isfile(path):
+        return os.path.getsize(path)
+    total_size = 0
+    for root, dirs, files in os.walk(path):
+        for f in files:
+            abs_path = os.path.join(root, f)
+            total_size += os.path.getsize(abs_path)
+    return total_size
 
 def readable_time(seconds: int) -> str:
     result = ''
