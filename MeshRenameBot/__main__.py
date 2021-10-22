@@ -3,15 +3,12 @@ from .core.handlers import add_handlers
 from .mesh_bot import MeshRenameBot
 from . maneuvers.ExecutorManager import ExecutorManager
 import logging
-import time
 
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s %(levelname)s %(threadName)s %(name)s %(message)s"
 )
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
-
-botStartTime = time.time()
 
 # TODO Add a alert for an extra space recorded
 
