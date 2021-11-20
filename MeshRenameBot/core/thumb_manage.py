@@ -22,7 +22,7 @@ async def adjust_image(path: str) -> Union[str, None]:
         im = Image.open(path)
         im.convert("RGB").save(path,"JPEG")
         im = Image.open(path)
-        im.thumbnail((320,320), Image.ANTIALIAS)
+        im.thumbnail((1280, 720), Image.ANTIALIAS)
         im.save(path,"JPEG")
         return path
     except Exception:
